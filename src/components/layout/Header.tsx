@@ -1,4 +1,3 @@
-
 // import { useState, useEffect } from "react";
 // import { Link, useLocation } from "react-router-dom";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -43,50 +42,65 @@
 //           : "bg-transparent"
 //       }`}
 //     >
-//       <div className="w-full px-3 xl:px-6">
-//         <nav className="flex items-center justify-between h-20">
+//       <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20">
+//         <nav className="flex items-center justify-between h-20 lg:h-24">
 
-//           {/* ── Logo ─────────────────────────────────────────────
-//               Capped max-width so it never eats into the nav area.
-//           ──────────────────────────────────────────────────────── */}
+//           {/* ── Logo ─────────────────────────────────────────────────────── */}
+//           {/*
+//             Key fix: the entire logo block (icon + name + shloka) lives in
+//             ONE flex row that NEVER wraps. Both images share the same
+//             percentage-based height reference so they scale together at
+//             every zoom level. No fixed px, no vw clamp – just % of the
+//             nav bar height which itself is responsive via h-20 / h-24.
+//           */}
 //           <Link
 //             to="/"
-//             className="flex items-center gap-2 flex-shrink-0"
-//             style={{ textDecoration: "none", outline: "none" }}
+//             className="flex items-center flex-shrink-0"
+//             style={{ gap: "10px", textDecoration: "none", outline: "none" }}
 //           >
-//             <motion.div
-//               whileHover={{ scale: 1.05 }}
-//               transition={{ duration: 0.3 }}
-//               layout={false}
-//               style={{ display: "block", lineHeight: 0, fontSize: 0 }}
-//               className="flex-shrink-0"
+//             {/* Ganesha / Hanuman icon */}
+//             <img
+//               src={hanumanGaneshaLogo}
+//               alt="Hanuman Ganesha"
+//               style={{
+//                 height: "56px",
+//                 width: "auto",
+//                 objectFit: "contain",
+//                 display: "block",
+//                 flexShrink: 0,
+//               }}
+//             />
+
+//             {/* Name logo + shloka stacked */}
+//             <div
+//               style={{
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 alignItems: "flex-start",
+//                 justifyContent: "center",
+//                 gap: "2px",
+//               }}
 //             >
 //               <img
-//                 src={hanumanGaneshaLogo}
-//                 alt="Hanuman Ganesha"
-//                 className="h-14 w-auto object-contain"
-//                 style={{ display: "block", verticalAlign: "bottom" }}
-//               />
-//             </motion.div>
-
-//             <div className="flex flex-col items-start justify-center pointer-events-none">
-//               <motion.div
-//                 whileHover={{ scale: 1.05 }}
-//                 transition={{ duration: 0.3 }}
-//                 layout={false}
-//                 style={{ display: "block", lineHeight: 0, fontSize: 0 }}
-//               >
-//                 <img
-//                   src={nameLogoImage}
-//                   alt="Astro Santosh Pandey"
-//                   className="h-9 w-auto object-contain"
-//                   style={{ display: "block", verticalAlign: "bottom" }}
-//                 />
-//               </motion.div>
-//               <span
-//                 className="text-[9px] italic mt-0.5 text-[#FFD700] leading-tight pl-0.5 whitespace-nowrap"
+//                 src={nameLogoImage}
+//                 alt="Astro Santosh Pandey"
 //                 style={{
-//                   textShadow: "0 0 3px rgba(255,215,0,0.4), 0 0 6px rgba(218,165,32,0.25)",
+//                   height: "38px",
+//                   width: "auto",
+//                   objectFit: "contain",
+//                   display: "block",
+//                 }}
+//               />
+//               <span
+//                 style={{
+//                   fontSize: "9px",
+//                   fontStyle: "italic",
+//                   color: "#FFD700",
+//                   whiteSpace: "nowrap",
+//                   lineHeight: 1.2,
+//                   paddingLeft: "2px",
+//                   textShadow:
+//                     "0 0 3px rgba(255,215,0,0.4), 0 0 6px rgba(218,165,32,0.25)",
 //                 }}
 //               >
 //                 ज्योतिषं सर्वार्थ साधकं
@@ -94,11 +108,8 @@
 //             </div>
 //           </Link>
 
-//           {/* ── Desktop Nav (lg: 1024-1279px) — compact ──────────
-//               At this breakpoint we fit everything with tighter gaps
-//               and slightly smaller text. WhatsApp label is hidden.
-//           ──────────────────────────────────────────────────────── */}
-//           <div className="hidden lg:flex xl:hidden items-center gap-3 flex-1 justify-center px-2 min-w-0">
+//           {/* ── Desktop Nav lg (1024–1279 px) ────────────────────────────── */}
+//           <div className="hidden lg:flex xl:hidden items-center gap-3 flex-1 justify-center px-3 min-w-0">
 //             {navItems.map((item) => (
 //               <Link
 //                 key={item.path}
@@ -120,7 +131,7 @@
 //               to="/quick-services"
 //               className={`
 //                 relative inline-flex items-center gap-1 text-[11px] font-bold whitespace-nowrap
-//                 px-2 py-0.5 rounded-full border transition-all duration-200 flex-shrink-0
+//                 px-2.5 py-1 rounded-full border transition-all duration-200 flex-shrink-0
 //                 ${isQuickServices
 //                   ? "bg-primary text-primary-foreground border-primary shadow-md"
 //                   : "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
@@ -135,9 +146,7 @@
 //             </Link>
 //           </div>
 
-//           {/* ── Desktop Nav (xl: 1280px+) — comfortable spacing ──
-//               At this breakpoint everything has room to breathe.
-//           ──────────────────────────────────────────────────────── */}
+//           {/* ── Desktop Nav xl (1280 px+) ────────────────────────────────── */}
 //           <div className="hidden xl:flex items-center gap-5 2xl:gap-7 flex-1 justify-center px-4">
 //             {navItems.map((item) => (
 //               <Link
@@ -159,7 +168,7 @@
 //             <Link
 //               to="/quick-services"
 //               className={`
-//                 relative inline-flex items-center gap-1 text-[13px] font-bold whitespace-nowrap
+//                 relative inline-flex items-center gap-1.5 text-[13px] font-bold whitespace-nowrap
 //                 px-3 py-1 rounded-full border transition-all duration-200 flex-shrink-0
 //                 ${isQuickServices
 //                   ? "bg-primary text-primary-foreground border-primary shadow-md"
@@ -175,15 +184,12 @@
 //             </Link>
 //           </div>
 
-//           {/* ── CTA Buttons ──────────────────────────────────────
-//               flex-shrink-0 — never shrink or wrap.
-//               WhatsApp: icon-only at lg, icon+label at xl+.
-//           ──────────────────────────────────────────────────────── */}
-//           <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
+//           {/* ── CTA Buttons ──────────────────────────────────────────────── */}
+//           <div className="hidden lg:flex items-center gap-2.5 flex-shrink-0">
 //             <Button
 //               variant="ghost"
 //               size="sm"
-//               className="text-foreground/80 hover:text-primary px-2"
+//               className="text-foreground/80 hover:text-primary px-2.5"
 //               asChild
 //             >
 //               <a href="https://wa.me/+918879731174" target="_blank" rel="noopener noreferrer">
@@ -201,7 +207,7 @@
 //             </Button>
 //           </div>
 
-//           {/* ── Mobile Hamburger ─────────────────────────────── */}
+//           {/* ── Mobile Hamburger ─────────────────────────────────────────── */}
 //           <button
 //             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 //             className="lg:hidden p-2 text-foreground"
@@ -211,7 +217,7 @@
 //         </nav>
 //       </div>
 
-//       {/* ── Mobile Menu ──────────────────────────────────────── */}
+//       {/* ── Mobile Menu ──────────────────────────────────────────────────── */}
 //       <AnimatePresence>
 //         {isMobileMenuOpen && (
 //           <motion.div
@@ -220,7 +226,7 @@
 //             exit={{ opacity: 0, height: 0 }}
 //             className="lg:hidden bg-background/98 backdrop-blur-lg border-t border-border"
 //           >
-//             <div className="px-4 py-5 space-y-1">
+//             <div className="px-6 py-5 space-y-1">
 //               {navItems.map((item, index) => (
 //                 <motion.div
 //                   key={item.path}
@@ -285,7 +291,6 @@
 
 
 
-
 //testing
 
 
@@ -308,6 +313,80 @@ const navItems = [
   { name: "About",      path: "/about" },
   { name: "Contact",    path: "/contact" },
 ];
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LogoBrand
+   A single reusable component used in both Header and Footer.
+   • The outer flex row is always `items-center` so both children share
+     the same vertical mid-point regardless of how tall either one is.
+   • Heights are fixed in px so they never reflow or drift at any zoom.
+   • The shloka text uses `display:block` (not inline) so it cannot
+     accidentally push the baseline of the name image upward.
+───────────────────────────────────────────────────────────────────────────── */
+export const LogoBrand = () => (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",   /* ← vertical centre for BOTH columns */
+      gap: "10px",
+    }}
+  >
+    {/* Left column: Ganesha / Hanuman icon */}
+    <img
+      src={hanumanGaneshaLogo}
+      alt="Hanuman Ganesha"
+      style={{
+        height: "56px",
+        width: "auto",
+        objectFit: "contain",
+        display: "block",
+        flexShrink: 0,
+      }}
+    />
+
+    {/* Right column: name logo stacked above shloka */}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        gap: "3px",
+        /* Give this column an explicit height equal to the icon so that
+           justify-content:center works perfectly in every browser / zoom. */
+        height: "56px",
+      }}
+    >
+      <img
+        src={nameLogoImage}
+        alt="Astro Santosh Pandey"
+        style={{
+          height: "36px",
+          width: "auto",
+          objectFit: "contain",
+          display: "block",
+          flexShrink: 0,
+        }}
+      />
+      <span
+        style={{
+          display: "block",          /* block prevents inline baseline shift */
+          fontSize: "9px",
+          fontStyle: "italic",
+          color: "#FFD700",
+          whiteSpace: "nowrap",
+          lineHeight: 1.2,
+          paddingLeft: "2px",
+          textShadow:
+            "0 0 3px rgba(255,215,0,0.4), 0 0 6px rgba(218,165,32,0.25)",
+        }}
+      >
+        ज्योतिषं सर्वार्थ साधकं
+      </span>
+    </div>
+  </div>
+);
 
 export const Header = () => {
   const [isScrolled, setIsScrolled]             = useState(false);
@@ -334,53 +413,85 @@ export const Header = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="w-full px-4 xl:px-8">
-        <nav className="flex items-center justify-between h-24">
+      <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20">
+        <nav className="flex items-center justify-between h-20 lg:h-24">
 
-          {/* ── Logo ──────────────────────────────────────────── */}
+          {/* ── Logo ─────────────────────────────────────────────────────── */}
           <Link
             to="/"
-            className="flex items-center flex-shrink-0"
-            style={{ textDecoration: "none", outline: "none", gap: "6px" }}
+            className="flex-shrink-0"
+            style={{ textDecoration: "none", outline: "none" }}
           >
-            {/* Large Hanuman/Ganesha icon */}
-            <motion.img
-              src={hanumanGaneshaLogo}
-              alt="Hanuman Ganesha"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-              className="h-20 w-auto object-contain flex-shrink-0"
-              style={{ display: "block" }}
-            />
-
-            {/* Text block: name logo image + tagline */}
-            <div className="flex flex-col items-start justify-center pointer-events-none">
-              <motion.img
-                src={nameLogoImage}
-                alt="Astro Santosh Pandey"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className="h-12 w-auto object-contain"
-                style={{ display: "block" }}
-              />
-              <span
-                className="text-[10px] italic mt-1 text-[#FFD700] leading-tight pl-0.5 whitespace-nowrap"
+            {/* Inline the brand block so the Link itself is just a wrapper */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",   /* vertical centre */
+                gap: "10px",
+              }}
+            >
+              {/* Ganesha / Hanuman icon */}
+              <img
+                src={hanumanGaneshaLogo}
+                alt="Hanuman Ganesha"
                 style={{
-                  textShadow: "0 0 3px rgba(255,215,0,0.4), 0 0 6px rgba(218,165,32,0.25)",
+                  height: "56px",
+                  width: "auto",
+                  objectFit: "contain",
+                  display: "block",
+                  flexShrink: 0,
+                }}
+              />
+
+              {/* Name logo + shloka column */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                  gap: "3px",
+                  height: "56px",      /* match icon height exactly */
                 }}
               >
-                ज्योतिषं सर्वार्थ साधकं
-              </span>
+                <img
+                  src={nameLogoImage}
+                  alt="Astro Santosh Pandey"
+                  style={{
+                    height: "36px",
+                    width: "auto",
+                    objectFit: "contain",
+                    display: "block",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: "9px",
+                    fontStyle: "italic",
+                    color: "#FFD700",
+                    whiteSpace: "nowrap",
+                    lineHeight: 1.2,
+                    paddingLeft: "2px",
+                    textShadow:
+                      "0 0 3px rgba(255,215,0,0.4), 0 0 6px rgba(218,165,32,0.25)",
+                  }}
+                >
+                  ज्योतिषं सर्वार्थ साधकं
+                </span>
+              </div>
             </div>
           </Link>
 
-          {/* ── Desktop Nav (lg: 1024-1279px) ──────────────────── */}
-          <div className="hidden lg:flex xl:hidden items-center gap-6 flex-1 justify-center px-4 min-w-0">
+          {/* ── Desktop Nav lg (1024–1279 px) ────────────────────────────── */}
+          <div className="hidden lg:flex xl:hidden items-center gap-3 flex-1 justify-center px-3 min-w-0">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative text-[12px] font-medium transition-colors hover:text-primary whitespace-nowrap ${
+                className={`relative text-[11.5px] font-medium transition-colors hover:text-primary whitespace-nowrap ${
                   location.pathname === item.path ? "text-primary" : "text-foreground/80"
                 }`}
               >
@@ -412,13 +523,13 @@ export const Header = () => {
             </Link>
           </div>
 
-          {/* ── Desktop Nav (xl: 1280px+) ──────────────────────── */}
-          <div className="hidden xl:flex items-center gap-8 2xl:gap-10 flex-1 justify-center px-6">
+          {/* ── Desktop Nav xl (1280 px+) ────────────────────────────────── */}
+          <div className="hidden xl:flex items-center gap-5 2xl:gap-7 flex-1 justify-center px-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative text-[14px] font-medium transition-colors hover:text-primary whitespace-nowrap ${
+                className={`relative text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
                   location.pathname === item.path ? "text-primary" : "text-foreground/80"
                 }`}
               >
@@ -435,7 +546,7 @@ export const Header = () => {
               to="/quick-services"
               className={`
                 relative inline-flex items-center gap-1.5 text-[13px] font-bold whitespace-nowrap
-                px-3.5 py-1.5 rounded-full border transition-all duration-200 flex-shrink-0
+                px-3 py-1 rounded-full border transition-all duration-200 flex-shrink-0
                 ${isQuickServices
                   ? "bg-primary text-primary-foreground border-primary shadow-md"
                   : "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
@@ -450,12 +561,12 @@ export const Header = () => {
             </Link>
           </div>
 
-          {/* ── CTA Buttons ──────────────────────────────────────── */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          {/* ── CTA Buttons ──────────────────────────────────────────────── */}
+          <div className="hidden lg:flex items-center gap-2.5 flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
-              className="text-foreground/80 hover:text-primary px-2"
+              className="text-foreground/80 hover:text-primary px-2.5"
               asChild
             >
               <a href="https://wa.me/+918879731174" target="_blank" rel="noopener noreferrer">
@@ -466,14 +577,14 @@ export const Header = () => {
 
             <Button
               size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-gold whitespace-nowrap text-[12px] xl:text-[13px] px-4 xl:px-5"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-gold whitespace-nowrap text-[11px] xl:text-sm px-3 xl:px-4"
               asChild
             >
               <Link to="/contact#booking">Book Consultation</Link>
             </Button>
           </div>
 
-          {/* ── Mobile Hamburger ─────────────────────────────────── */}
+          {/* ── Mobile Hamburger ─────────────────────────────────────────── */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden p-2 text-foreground"
@@ -483,7 +594,7 @@ export const Header = () => {
         </nav>
       </div>
 
-      {/* ── Mobile Menu ──────────────────────────────────────────── */}
+      {/* ── Mobile Menu ──────────────────────────────────────────────────── */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -492,7 +603,7 @@ export const Header = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-background/98 backdrop-blur-lg border-t border-border"
           >
-            <div className="px-4 py-5 space-y-1">
+            <div className="px-6 py-5 space-y-1">
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.path}

@@ -1,3 +1,5 @@
+
+
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +16,7 @@ import {
   Info,
   Sparkles,
   Zap,
+  MapPin,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import { format, startOfDay, isAfter } from "date-fns";
@@ -25,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { sendLeadToCRM } from "@/lib/sendLeadToCRM";
+import { sendLeadToCRM } from "@/lib/sendLeadToCRM";   // ← NEW: CRM import
 import { quickServices, serviceCategories } from "@/data/quickServices";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -33,7 +36,7 @@ import { Footer } from "@/components/layout/Footer";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
-// ── Collapsible Section ──────────────────────────────────────────
+// ── Collapsible Section ───────────────────────────────────────────────────────
 const SectionBlock = ({
   title,
   icon: Icon,
@@ -88,7 +91,7 @@ const SectionBlock = ({
   );
 };
 
-// ── DOB Picker ───────────────────────────────────────────────────
+// ── DOB Picker ────────────────────────────────────────────────────────────────
 const DobPicker = ({
   value,
   onChange,
@@ -186,7 +189,13 @@ const DobPicker = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.97 }}
                   transition={{ duration: 0.18 }}
-                  style={{ position: "absolute", top: pos.top, left: pos.left, width: pos.width, zIndex: 999 }}
+                  style={{
+                    position: "absolute",
+                    top: pos.top,
+                    left: pos.left,
+                    width: pos.width,
+                    zIndex: 999,
+                  }}
                   className="bg-background border border-primary/25 rounded-2xl shadow-2xl overflow-hidden"
                 >
                   <div className="p-2">
@@ -202,10 +211,22 @@ const DobPicker = ({
                     />
                   </div>
                   <div className="flex gap-2 px-3 pb-3 pt-1 border-t border-primary/10 bg-primary/5">
-                    <Button type="button" size="sm" variant="outline" className="flex-1 h-9 text-xs border-primary/20" onClick={() => setOpen(false)}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-9 text-xs border-primary/20"
+                      onClick={() => setOpen(false)}
+                    >
                       Cancel
                     </Button>
-                    <Button type="button" size="sm" disabled={!pending} className="flex-1 h-9 text-xs bg-primary glow-gold font-bold" onClick={confirm}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!pending}
+                      className="flex-1 h-9 text-xs bg-primary glow-gold font-bold"
+                      onClick={confirm}
+                    >
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
                       {pending ? `Confirm ${format(pending, "dd MMM")}` : "Pick a date"}
                     </Button>
@@ -220,7 +241,7 @@ const DobPicker = ({
   );
 };
 
-// ── Main Page ────────────────────────────────────────────────────
+// ── Main Page ─────────────────────────────────────────────────────────────────
 export const QuickServiceDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -229,14 +250,23 @@ export const QuickServiceDetailPage = () => {
   const service = quickServices.find((s) => s.slug === slug);
 
   const [form, setForm] = useState({
-    fullName: "", dob: "", timeOfBirth: "",
-    question: "", phone: "", email: "",
+    fullName:     "",
+    dob:          "",
+    timeOfBirth:  "",
+    placeOfBirth: "",
+    question:     "",
+    phone:        "",
+    email:        "",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [cashfree, setCashfree] = useState<any>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  const [errors, setErrors]               = useState<Record<string, string>>({});
+  const [cashfree, setCashfree]           = useState<any>(null);
+  const [isProcessing, setIsProcessing]   = useState(false);
   const [paymentResult, setPaymentResult] = useState<{
-    success: boolean; order_id?: string; amount?: number; message?: string;
+    success: boolean;
+    order_id?: string;
+    amount?: number;
+    message?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -262,7 +292,7 @@ export const QuickServiceDetailPage = () => {
     );
   }
 
-  const Icon = service.icon;
+  const Icon     = service.icon;
   const catLabel = serviceCategories.find((c) => c.id === service.category);
 
   const update = (k: keyof typeof form, v: string) => {
@@ -272,14 +302,30 @@ export const QuickServiceDetailPage = () => {
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!form.fullName.trim()) e.fullName = "Full name is required";
-    else if (form.fullName.trim().length < 3) e.fullName = "At least 3 characters";
-    if (!form.dob) e.dob = "Date of birth is required";
-    if (!form.question.trim()) e.question = "Your question is required";
-    else if (form.question.trim().length < 10) e.question = "Please describe in at least 10 characters";
-    if (!form.phone) e.phone = "Phone number is required";
-    else if (!/^\d{10}$/.test(form.phone)) e.phone = "Must be 10 digits";
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Invalid email";
+    if (!form.fullName.trim())
+      e.fullName = "Full name is required";
+    else if (form.fullName.trim().length < 3)
+      e.fullName = "At least 3 characters";
+
+    if (!form.dob)
+      e.dob = "Date of birth is required";
+
+    if (!form.placeOfBirth.trim())
+      e.placeOfBirth = "Place of birth is required";
+
+    if (!form.question.trim())
+      e.question = "Your question is required";
+    else if (form.question.trim().length < 10)
+      e.question = "Please describe in at least 10 characters";
+
+    if (!form.phone)
+      e.phone = "Phone number is required";
+    else if (!/^\d{10}$/.test(form.phone))
+      e.phone = "Must be 10 digits";
+
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      e.email = "Invalid email";
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -297,25 +343,36 @@ export const QuickServiceDetailPage = () => {
 
   const handlePay = async () => {
     if (!validate()) {
-      toast({ title: "Missing Information", description: "Please fill all required fields.", variant: "destructive" });
+      toast({
+        title: "Missing Information",
+        description: "Please fill all required fields.",
+        variant: "destructive",
+      });
       return;
     }
     if (!cashfree) {
-      toast({ title: "System Error", description: "Payment system not ready. Please refresh.", variant: "destructive" });
+      toast({
+        title: "System Error",
+        description: "Payment system not ready. Please refresh.",
+        variant: "destructive",
+      });
       return;
     }
 
     setIsProcessing(true);
     try {
+      // ── NEW: Send lead to CRM before payment (mirrors BookingProcess behaviour) ──
       await sendLeadToCRM({
-        name: form.fullName, phone: form.phone, email: form.email || "",
-        source: "Quick Services Form",
-        tags: ["Quick Service", service.title, `Delivery: ${service.deliveryTime}`],
+        name:   form.fullName,
+        phone:  form.phone,
+        email:  form.email || "",
+        source: "Quick Service Booking",
+        tags:   ["Quick Service", service.title, `Delivery: ${service.deliveryTime}`],
       });
 
       const res = await axios.post(`${API_BASE_URL}/payment`, {
-        amount: service.price,
-        customer_name: form.fullName,
+        amount:         service.price,
+        customer_name:  form.fullName,
         customer_phone: form.phone,
         customer_email: form.email || "customer@example.com",
       });
@@ -331,7 +388,10 @@ export const QuickServiceDetailPage = () => {
       });
 
       if (checkoutResult?.error) {
-        setPaymentResult({ success: false, message: checkoutResult.error.message || "Payment not completed." });
+        setPaymentResult({
+          success: false,
+          message: checkoutResult.error.message || "Payment not completed.",
+        });
         return;
       }
 
@@ -340,17 +400,27 @@ export const QuickServiceDetailPage = () => {
       if (verifyRes?.data?.success) {
         try {
           await axios.post(`${API_BASE_URL}/quick-service-order`, {
-            serviceId: service.id, serviceTitle: service.title,
-            price: service.price, deliveryTime: service.deliveryTime,
-            fullName: form.fullName, dob: form.dob,
-            timeOfBirth: form.timeOfBirth, question: form.question,
-            phone: form.phone, email: form.email,
-            orderId: res.data.order_id,
+            serviceId:        service.id,
+            serviceTitle:     service.title,
+            price:            service.price,
+            deliveryTime:     service.deliveryTime,
+            fullName:         form.fullName,
+            dob:              form.dob,
+            timeOfBirth:      form.timeOfBirth,
+            placeOfBirth:     form.placeOfBirth,
+            question:         form.question,
+            phone:            form.phone,
+            email:            form.email,
+            orderId:          res.data.order_id,
             paymentSessionId: res.data.payment_session_id,
           });
         } catch (err) { console.error("Failed to save quick service order", err); }
 
-        setPaymentResult({ success: true, order_id: res.data.order_id, amount: service.price });
+        setPaymentResult({
+          success:  true,
+          order_id: res.data.order_id,
+          amount:   service.price,
+        });
       } else {
         setPaymentResult({
           success: false,
@@ -359,13 +429,17 @@ export const QuickServiceDetailPage = () => {
       }
     } catch (err) {
       console.error("Payment error", err);
-      toast({ title: "Payment Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+      toast({
+        title: "Payment Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // ── Payment Result Screen ──────────────────────────────────────
+  // ── Payment Result Screen ─────────────────────────────────────────────────
   if (paymentResult) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -382,37 +456,65 @@ export const QuickServiceDetailPage = () => {
                   <CheckCircle2 className="w-10 h-10 text-green-500" />
                 </div>
                 <div>
-                  <h2 className="font-serif text-3xl font-bold text-gradient-gold mb-2">Order Confirmed!</h2>
+                  <h2 className="font-serif text-3xl font-bold text-gradient-gold mb-2">
+                    Order Confirmed!
+                  </h2>
                   <p className="text-muted-foreground text-sm">
-                    Your <span className="text-primary font-bold">{service.title}</span> report is being prepared.
+                    Your{" "}
+                    <span className="text-primary font-bold">{service.title}</span>{" "}
+                    report is being prepared.
                   </p>
                 </div>
                 <div className="bg-green-500/5 border border-green-500/20 rounded-2xl p-4">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     <p className="text-sm font-bold">
-                      Expect your answer on <span className="text-green-500">WhatsApp</span> within {service.deliveryTime}!
+                      Expect your answer on{" "}
+                      <span className="text-green-500">WhatsApp</span> within{" "}
+                      {service.deliveryTime}!
                     </p>
                   </div>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Check your WhatsApp messages</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    Check your WhatsApp messages
+                  </p>
                 </div>
                 <div className="bg-background/40 border border-primary/20 rounded-2xl p-4 text-left space-y-3">
                   <div className="flex justify-between border-b border-primary/10 pb-2">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Order ID</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Order ID
+                    </span>
                     <span className="font-mono text-[10px]">{paymentResult.order_id}</span>
                   </div>
                   <div className="flex justify-between border-b border-primary/10 pb-2">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Amount Paid</span>
-                    <span className="font-bold text-primary">₹{paymentResult.amount?.toLocaleString("en-IN")}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Amount Paid
+                    </span>
+                    <span className="font-bold text-primary">
+                      ₹{paymentResult.amount?.toLocaleString("en-IN")}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Customer</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Customer
+                    </span>
                     <span className="text-xs font-medium">{form.fullName}</span>
                   </div>
                 </div>
-                <div className="flex gap-3 justify-center">
-                  <Button variant="outline" onClick={() => navigate("/quick-services")} className="border-primary/20 text-sm">More Services</Button>
-                  <Button variant="outline" onClick={() => navigate("/")} className="border-primary/20 text-sm">Go Home</Button>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/quick-services")}
+                    className="border-primary/20 text-sm"
+                  >
+                    More Services
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/")}
+                    className="border-primary/20 text-sm"
+                  >
+                    Go Home
+                  </Button>
                 </div>
               </>
             ) : (
@@ -420,9 +522,18 @@ export const QuickServiceDetailPage = () => {
                 <div className="w-20 h-20 bg-red-500/20 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
                   <Info className="w-10 h-10 text-red-500" />
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-red-400">Payment Failed</h2>
-                <p className="text-muted-foreground text-sm max-w-xs mx-auto">{paymentResult.message || "Couldn't process your payment."}</p>
-                <Button onClick={() => setPaymentResult(null)} className="px-8 bg-primary hover:bg-primary/90 glow-gold font-bold">Try Again</Button>
+                <h2 className="font-serif text-2xl font-bold text-red-400">
+                  Payment Failed
+                </h2>
+                <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+                  {paymentResult.message || "Couldn't process your payment."}
+                </p>
+                <Button
+                  onClick={() => setPaymentResult(null)}
+                  className="px-8 bg-primary hover:bg-primary/90 glow-gold font-bold"
+                >
+                  Try Again
+                </Button>
               </>
             )}
           </motion.div>
@@ -432,43 +543,52 @@ export const QuickServiceDetailPage = () => {
     );
   }
 
-  // ── Main Detail Page ───────────────────────────────────────────
+  // ── Main Detail Page ──────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div
+      className="min-h-screen flex flex-col bg-background text-foreground"
+      onCopy={(e) => e.preventDefault()}
+      onCut={(e) => e.preventDefault()}
+      onPaste={(e) => e.preventDefault()}
+      style={{ userSelect: "none", WebkitUserSelect: "none" }}
+    >
       <Header />
 
-      {/* ambient glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/6 blur-[100px]" />
       </div>
 
       <div className="relative z-10 flex-1 pt-28 pb-20">
+
         {/* breadcrumb */}
         <div className="max-w-5xl mx-auto px-4 mb-6">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <span>/</span>
-            <Link to="/quick-services" className="hover:text-primary transition-colors">Quick Services</Link>
+            <Link to="/quick-services" className="hover:text-primary transition-colors">
+              Quick Services
+            </Link>
             <span>/</span>
-            <span className="text-primary font-medium truncate">{service.title}</span>
+            <span className="text-primary font-medium truncate max-w-[180px] sm:max-w-none">
+              {service.title}
+            </span>
           </div>
         </div>
 
         <div className="max-w-5xl mx-auto px-4">
-          {/* ── Service Hero ──────────────────────────────────── */}
+
+          {/* ── Service Hero ── */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="cosmic-card p-6 md:p-8 mb-8"
+            className="cosmic-card p-5 md:p-8 mb-8"
           >
             <div className="flex flex-col md:flex-row md:items-center gap-5">
-              {/* icon */}
-              <div className="w-16 h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
-                <Icon className="w-8 h-8 text-primary" />
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
+                <Icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
               </div>
 
-              <div className="flex-1">
-                {/* badges */}
+              <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-3">
                   <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full">
                     {catLabel?.emoji} {catLabel?.label}
@@ -477,8 +597,7 @@ export const QuickServiceDetailPage = () => {
                     <Clock className="w-2.5 h-2.5" /> Delivered in {service.deliveryTime}
                   </span>
                 </div>
-
-                <h1 className="font-serif text-3xl md:text-4xl font-bold leading-tight mb-2">
+                <h1 className="font-serif text-2xl md:text-4xl font-bold leading-tight mb-2">
                   {service.title}
                 </h1>
                 <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
@@ -486,24 +605,26 @@ export const QuickServiceDetailPage = () => {
                 </p>
               </div>
 
-              {/* price */}
               <div className="md:text-right shrink-0">
-                <p className="text-4xl font-bold text-gradient-gold font-serif">
+                <p className="text-3xl md:text-4xl font-bold text-gradient-gold font-serif">
                   ₹{service.price.toLocaleString("en-IN")}
                 </p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">One-time fee</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">
+                  One-time fee
+                </p>
               </div>
             </div>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
-            {/* ── LEFT: Content Sections ──────────────────────── */}
+
+            {/* ── LEFT: Content Sections ── */}
             <div className="space-y-3">
-              <SectionBlock title="Why This Matters" icon={AlertTriangle} defaultOpen>
+              <SectionBlock title="Why This Matters" icon={AlertTriangle}>
                 <p>{service.problemStatement}</p>
               </SectionBlock>
 
-              <SectionBlock title="When to Use This Service" icon={CheckCircle2} defaultOpen>
+              <SectionBlock title="When to Use This Service" icon={CheckCircle2}>
                 <ul className="space-y-2.5">
                   {service.whenToUse.map((item, i) => (
                     <li key={i} className="flex items-start gap-2.5">
@@ -536,7 +657,7 @@ export const QuickServiceDetailPage = () => {
                 </ul>
               </SectionBlock>
 
-              <SectionBlock title="What You Will Receive" icon={Package} defaultOpen>
+              <SectionBlock title="What You Will Receive" icon={Package}>
                 <ul className="space-y-2.5">
                   {service.deliverables.map((item, i) => (
                     <li key={i} className="flex items-start gap-2.5">
@@ -547,7 +668,6 @@ export const QuickServiceDetailPage = () => {
                 </ul>
               </SectionBlock>
 
-              {/* back link */}
               <Link
                 to="/quick-services"
                 className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors font-semibold pt-2"
@@ -557,10 +677,11 @@ export const QuickServiceDetailPage = () => {
               </Link>
             </div>
 
-            {/* ── RIGHT: Sticky Form ───────────────────────────── */}
+            {/* ── RIGHT: Sticky Form ── */}
             <div>
               <div className="sticky top-28">
                 <div className="cosmic-card overflow-hidden">
+
                   {/* form header */}
                   <div className="bg-primary/10 border-b border-primary/15 px-5 py-4">
                     <div className="flex items-center gap-2">
@@ -574,7 +695,15 @@ export const QuickServiceDetailPage = () => {
                     </p>
                   </div>
 
-                  <div className="p-5 space-y-4">
+                  {/* form fields — re-enable copy-paste inside form only */}
+                  <div
+                    className="p-5 space-y-4"
+                    style={{ userSelect: "text", WebkitUserSelect: "text" }}
+                    onCopy={(e) => e.stopPropagation()}
+                    onCut={(e) => e.stopPropagation()}
+                    onPaste={(e) => e.stopPropagation()}
+                  >
+
                     {/* Full Name */}
                     <div className="space-y-1.5">
                       <Label className="text-primary font-medium text-xs">Full Name *</Label>
@@ -584,7 +713,9 @@ export const QuickServiceDetailPage = () => {
                         value={form.fullName}
                         onChange={(e) => update("fullName", e.target.value)}
                       />
-                      {errors.fullName && <p className="text-red-500 text-[10px]">{errors.fullName}</p>}
+                      {errors.fullName && (
+                        <p className="text-red-500 text-[10px]">{errors.fullName}</p>
+                      )}
                     </div>
 
                     {/* Phone */}
@@ -602,7 +733,9 @@ export const QuickServiceDetailPage = () => {
                           onChange={(e) => update("phone", e.target.value.replace(/\D/g, ""))}
                         />
                       </div>
-                      {errors.phone && <p className="text-red-500 text-[10px]">{errors.phone}</p>}
+                      {errors.phone && (
+                        <p className="text-red-500 text-[10px]">{errors.phone}</p>
+                      )}
                     </div>
 
                     {/* Email */}
@@ -618,36 +751,61 @@ export const QuickServiceDetailPage = () => {
                         value={form.email}
                         onChange={(e) => update("email", e.target.value)}
                       />
-                      {errors.email && <p className="text-red-500 text-[10px]">{errors.email}</p>}
+                      {errors.email && (
+                        <p className="text-red-500 text-[10px]">{errors.email}</p>
+                      )}
                     </div>
 
                     {/* DOB */}
                     {service.requiresDOB && (
                       <div className="space-y-1.5">
-                        <Label className="text-primary font-medium text-xs">Date of Birth *</Label>
-                        <DobPicker value={form.dob} onChange={(v) => update("dob", v)} error={errors.dob} />
-                      </div>
-                    )}
-
-                    {/* Time of Birth */}
-                    {service.requiresBirthTime && (
-                      <div className="space-y-1.5">
                         <Label className="text-primary font-medium text-xs">
-                          Time of Birth{" "}
-                          <span className="text-muted-foreground font-normal">(optional)</span>
+                          Date of Birth *
                         </Label>
-                        <Input
-                          placeholder="e.g. 10:30 AM (if known)"
-                          className="bg-background border-primary/20 h-10 text-sm"
-                          value={form.timeOfBirth}
-                          onChange={(e) => update("timeOfBirth", e.target.value)}
+                        <DobPicker
+                          value={form.dob}
+                          onChange={(v) => update("dob", v)}
+                          error={errors.dob}
                         />
                       </div>
                     )}
 
+                    {/* Place of Birth */}
+                    <div className="space-y-1.5">
+                      <Label className="text-primary font-medium text-xs flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        Place of Birth *
+                      </Label>
+                      <Input
+                        placeholder="City, State (e.g. Mumbai, Maharashtra)"
+                        className={`bg-background border-primary/20 h-10 text-sm ${errors.placeOfBirth ? "border-red-500" : ""}`}
+                        value={form.placeOfBirth}
+                        onChange={(e) => update("placeOfBirth", e.target.value)}
+                      />
+                      {errors.placeOfBirth && (
+                        <p className="text-red-500 text-[10px]">{errors.placeOfBirth}</p>
+                      )}
+                    </div>
+
+                    {/* Time of Birth */}
+                    <div className="space-y-1.5">
+                      <Label className="text-primary font-medium text-xs">
+                        Time of Birth{" "}
+                        <span className="text-muted-foreground font-normal">(optional)</span>
+                      </Label>
+                      <Input
+                        placeholder="e.g. 10:30 AM (if known)"
+                        className="bg-background border-primary/20 h-10 text-sm"
+                        value={form.timeOfBirth}
+                        onChange={(e) => update("timeOfBirth", e.target.value)}
+                      />
+                    </div>
+
                     {/* Question */}
                     <div className="space-y-1.5">
-                      <Label className="text-primary font-medium text-xs">Your Question *</Label>
+                      <Label className="text-primary font-medium text-xs">
+                        Your Question *
+                      </Label>
                       <Textarea
                         placeholder="Describe your question in detail..."
                         rows={3}
@@ -655,16 +813,22 @@ export const QuickServiceDetailPage = () => {
                         value={form.question}
                         onChange={(e) => update("question", e.target.value)}
                       />
-                      {errors.question && <p className="text-red-500 text-[10px]">{errors.question}</p>}
+                      {errors.question && (
+                        <p className="text-red-500 text-[10px]">{errors.question}</p>
+                      )}
                     </div>
 
                     {/* Price summary */}
                     <div className="flex items-center justify-between p-3.5 bg-primary/10 border border-primary/20 rounded-2xl">
                       <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Total</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                          Total
+                        </p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <Clock className="w-3 h-3 text-primary/60" />
-                          <span className="text-[10px] text-muted-foreground">in {service.deliveryTime}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            in {service.deliveryTime}
+                          </span>
                         </div>
                       </div>
                       <p className="text-2xl font-bold text-gradient-gold font-serif">
@@ -692,10 +856,12 @@ export const QuickServiceDetailPage = () => {
                       <Info className="w-2.5 h-2.5" />
                       Secure payment · Answer on WhatsApp
                     </p>
+
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

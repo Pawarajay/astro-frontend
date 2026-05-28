@@ -7,47 +7,68 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { BookingCalendar } from "../BookingCalendar";
-// import { Sparkles, Hash, Home, Scroll, Repeat, User } from "lucide-react";
-import { Sparkles, Hash, Home, Scroll, Repeat, User, MessageCircle, Star, Gem, Heart, Briefcase, Zap } from "lucide-react";
+import {
+    Sparkles, Hash, Home, Scroll, Repeat, User,
+    MessageCircle, Star, Gem, Heart, Briefcase, Zap,
+    Moon, TrendingUp, Compass, Brain, DollarSign, Plane, Baby,
+} from "lucide-react";
+
+// ── Unified label class ───────────────────────────────────────────
+// Matches QuickServiceBookingTab FieldLabel and BookingDetailsStep exactly
+const labelCls = "text-primary/90 font-semibold text-[11px] uppercase tracking-wider";
+
+// ── Micro / Quick Service pricing ────────────────────────────────
 const microPricingData = [
-    { service: "Address 1 question", price: "1100", icon: MessageCircle },
-    { service: "Muhurat for buying Jewellery, Vehicles, Property, etc", price: "1100", icon: Star },
-    { service: "Personalised Auspicious / Lucky - Days, Colour, etc.", price: "1100", icon: Star },
-    { service: "Personalised Rudraksha / Crystal Recommendation", price: "1100", icon: Gem },
-    { service: "Personalised Tattoo Recommendation", price: "1100", icon: Zap },
-    { service: "Personalised Gemstone Recommendation", price: "2100", icon: Gem },
-    { service: "Personalised Lifestyle Behavioural Recommendation", price: "2100", icon: Heart },
-    { service: "Marriage - MatchMaking", price: "2100", icon: Heart },
-    { service: "Career - Guidance", price: "2100", icon: Briefcase },
-    { service: "Premium Kundli", price: "2100", icon: Scroll },
+    { service: "Daily Ritual Suggestion (Simple Routine)",        price: "500",   icon: Moon        },
+    { service: "Go Ahead or Wait Decision Guidance",              price: "500",   icon: Compass     },
+    { service: "Right Time Check (Shubh Time for Any Decision)",  price: "500",   icon: Clock       },
+    { service: "Ask 1 Question (Yes/No + Reason)",                price: "1,100", icon: MessageCircle },
+    { service: "Relationship Guidance",                           price: "1,100", icon: Heart       },
+    { service: "Family Issue Insight",                            price: "1,100", icon: Heart       },
+    { service: "Love Situation Guidance",                         price: "1,100", icon: Heart       },
+    { service: "Opportunity Check (Anything good coming soon?)",  price: "1,100", icon: TrendingUp  },
+    { service: "Sleep / Stress Related Insight",                  price: "1,100", icon: Moon        },
+    { service: "Strength Insight (Hidden Strengths)",             price: "1,100", icon: Brain       },
+    { service: "Name Initial Suggestion (for business/personal)", price: "1,100", icon: Hash        },
+    { service: "Property Buying Time Check",                      price: "1,100", icon: Home        },
+    { service: "Muhurat – Auspicious Timing",                     price: "1,100", icon: Star        },
+    { service: "Know Your Lucky Days & Colours",                  price: "1,100", icon: Star        },
+    { service: "Rudraksha / Crystal Recommendation",              price: "1,100", icon: Gem         },
+    { service: "Tattoo Recommendation",                           price: "1,100", icon: Zap         },
+    { service: "New Born Baby Name Recommendation",               price: "1,100", icon: Baby        },
+    { service: "Compatibility Check",                             price: "2,100", icon: Heart       },
+    { service: "Job Change Decision Guidance",                    price: "2,100", icon: Briefcase   },
+    { service: "Money Flow Guidance",                             price: "2,100", icon: DollarSign  },
+    { service: "Career Guidance",                                 price: "2,100", icon: Briefcase   },
+    { service: "Travel / Relocation Decision Check",              price: "2,100", icon: Plane       },
+    { service: "Gemstone Recommendation",                         price: "2,100", icon: Gem         },
+    { service: "Lifestyle & Behavioural Recommendation",          price: "2,100", icon: Heart       },
+    { service: "Premium Kundli",                                  price: "2,100", icon: Scroll      },
 ];
-// ── Pricing data ─────────────────────────────────────────────────
+
+// ── New Consultation pricing ──────────────────────────────────────
 const newPricingData = [
-    { service: "Astrology (Exact Birth Time Known)", price: "5100", duration: "30 min", icon: Sparkles },
-    { service: "Astrology (Exact Birth Time NOT Known)", price: "7500", duration: "60 min", icon: Sparkles },
-    { service: "Astrology (In-Person Mumbai)", price: "7500", duration: "60 min", icon: Sparkles },
-    { service: "Premium Kundli", price: "2100", icon: Scroll },
-    { service: "Numerology", price: "3100", duration: "30 min", icon: Hash },
-    { service: "Vastu (Exploration Call)", price: "5100", duration: "30 min", icon: Home },
+    { service: "Astrology (Exact Birth Time Known)",     price: "11,000", duration: "30 min", icon: Sparkles },
+    { service: "Astrology (Exact Birth Time NOT Known)", price: "15,000", duration: "60 min", icon: Sparkles },
+    { service: "Astrology (In-Person Mumbai)",           price: "15,000", duration: "60 min", icon: Sparkles },
+    { service: "Numerology",                             price: "3,100",  duration: "30 min", icon: Hash     },
+    { service: "Vastu (Exploration Call)",               price: "5,100",  duration: "30 min", icon: Home     },
 ];
 
+// ── Repeat / Follow-up Consultation pricing ───────────────────────
 const repeatPricingData = [
-    { service: "Astrology Follow-up (within 10 days)", price: "2100", duration: "30 min", icon: Repeat },
-    { service: "Astrology Follow-up (11-30 days)", price: "3100", duration: "30 min", icon: Repeat },
-    { service: "Astrology Follow-up (post 30 days)", price: "5100", duration: "30 min", icon: Repeat },
-    { service: "Numerology Follow-up (within 10 days)", price: "1100", duration: "30 min", icon: User },
-    { service: "Numerology Follow-up (11-30 days)", price: "2100", duration: "30 min", icon: User },
-    { service: "Numerology Follow-up (post 30 days)", price: "3100", duration: "30 min", icon: User },
+    { service: "Astrology Follow-up (within 10 days)",  price: "2,100", duration: "30 min", icon: Repeat },
+    { service: "Astrology Follow-up (11–30 days)",      price: "3,100", duration: "30 min", icon: Repeat },
+    { service: "Astrology Follow-up (post 30 days)",    price: "5,100", duration: "30 min", icon: Repeat },
+    { service: "Numerology Follow-up (within 10 days)", price: "1,100", duration: "30 min", icon: User   },
+    { service: "Numerology Follow-up (11–30 days)",     price: "2,100", duration: "30 min", icon: User   },
+    { service: "Numerology Follow-up (post 30 days)",   price: "3,100", duration: "30 min", icon: User   },
 ];
 
-// ── Pricing Row ──────────────────────────────────────────────────
+// ── Pricing Row ───────────────────────────────────────────────────
 const PricingRow = ({ item }: { item: typeof newPricingData[0] }) => (
     <div className="flex items-center justify-between px-3 py-1.5 hover:bg-primary/5 transition-colors">
         <div className="flex items-center gap-2">
@@ -68,7 +89,7 @@ const PricingRow = ({ item }: { item: typeof newPricingData[0] }) => (
     </div>
 );
 
-// ── Collapsible Pricing Chart ────────────────────────────────────
+// ── Collapsible Pricing Chart ─────────────────────────────────────
 const CollapsiblePricingChart = () => {
     const [isOpen, setIsOpen] = useState(false);
     return (
@@ -99,38 +120,24 @@ const CollapsiblePricingChart = () => {
                         className="overflow-hidden"
                     >
                         <div className="w-full bg-background/50 backdrop-blur-md rounded-b-xl border border-t-0 border-primary/20 overflow-hidden shadow-lg max-h-[360px] overflow-y-auto custom-scrollbar">
-                            {/* <div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
+                            <div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
+                                <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">Micro / Quick Service</h4>
+                            </div>
+                            <div className="divide-y divide-primary/10">
+                                {microPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
+                            </div>
+                            <div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
                                 <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">New Consultation</h4>
                             </div>
                             <div className="divide-y divide-primary/10">
                                 {newPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
                             </div>
                             <div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
-                                <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">Repeat Consultation</h4>
+                                <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">Repeat / Follow-up Consultation</h4>
                             </div>
                             <div className="divide-y divide-primary/10">
                                 {repeatPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
-                            </div> */}
-
-
-                            <div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
-    <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">Micro / Quick Service</h4>
-</div>
-<div className="divide-y divide-primary/10">
-    {microPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
-</div>
-<div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
-    <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">New Consultation</h4>
-</div>
-<div className="divide-y divide-primary/10">
-    {newPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
-</div>
-<div className="bg-primary/5 px-3 py-1 border-y border-primary/10">
-    <h4 className="text-primary/80 font-bold uppercase tracking-wider text-[8px]">Repeat Consultation</h4>
-</div>
-<div className="divide-y divide-primary/10">
-    {repeatPricingData.map((item, i) => <PricingRow key={i} item={item} />)}
-</div>
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -139,7 +146,7 @@ const CollapsiblePricingChart = () => {
     );
 };
 
-// ── Time of Birth Picker ─────────────────────────────────────────
+// ── Time of Birth Picker ──────────────────────────────────────────
 const hours      = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
 const allMinutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
 const periods    = ["AM", "PM"];
@@ -151,20 +158,16 @@ interface TimeOfBirthPickerProps {
 }
 
 const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) => {
-    const [isOpen, setIsOpen]   = useState(false);
-    const containerRef          = useRef<HTMLDivElement>(null);
-    const minuteScrollRef       = useRef<HTMLDivElement>(null);
+    const [isOpen, setIsOpen]     = useState(false);
+    const containerRef            = useRef<HTMLDivElement>(null);
+    const minuteScrollRef         = useRef<HTMLDivElement>(null);
 
     const parseValue = (val: string) => {
         if (!val) return { hour: "", minute: "00", period: "AM" };
-        const [h, m] = val.split(":").map(Number);
+        const [h, m]  = val.split(":").map(Number);
         const period  = h >= 12 ? "PM" : "AM";
         const hour12  = h % 12 === 0 ? 12 : h % 12;
-        return {
-            hour:   String(hour12).padStart(2, "0"),
-            minute: String(m).padStart(2, "0"),
-            period,
-        };
+        return { hour: String(hour12).padStart(2, "0"), minute: String(m).padStart(2, "0"), period };
     };
 
     const parsed = parseValue(value);
@@ -172,24 +175,18 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
     const [selectedMinute, setSelectedMinute] = useState(parsed.minute);
     const [selectedPeriod, setSelectedPeriod] = useState(parsed.period);
 
-    // Close on outside click
     useEffect(() => {
         const handler = (e: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-                setIsOpen(false);
-            }
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) setIsOpen(false);
         };
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
     }, []);
 
-    // Scroll selected minute into view when picker opens
     useEffect(() => {
         if (isOpen && minuteScrollRef.current) {
             const selectedEl = minuteScrollRef.current.querySelector("[data-selected='true']") as HTMLElement;
-            if (selectedEl) {
-                selectedEl.scrollIntoView({ block: "center", behavior: "smooth" });
-            }
+            if (selectedEl) selectedEl.scrollIntoView({ block: "center", behavior: "smooth" });
         }
     }, [isOpen]);
 
@@ -208,9 +205,7 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
 
     const handleClear = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setSelectedHour("");
-        setSelectedMinute("00");
-        setSelectedPeriod("AM");
+        setSelectedHour(""); setSelectedMinute("00"); setSelectedPeriod("AM");
         onChange("");
     };
 
@@ -220,26 +215,16 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
 
     return (
         <div ref={containerRef} className="relative w-full">
-
-            {/* ── Trigger button ── */}
             <button
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all duration-200
-                    ${error
-                        ? "border-red-500"
-                        : value
-                            ? "border-primary/50 bg-primary/8"
-                            : "border-primary/20 bg-background/50"
-                    }
+                    ${error ? "border-red-500" : value ? "border-primary/50 bg-primary/8" : "border-primary/20 bg-background/50"}
                     hover:border-primary/60 hover:bg-primary/5`}
             >
                 <div className="flex items-center gap-2.5 min-w-0">
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${value ? "bg-primary/20" : "bg-muted/40"}`}>
-                        {value
-                            ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                            : <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                        }
+                        {value ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Clock className="w-3.5 h-3.5 text-muted-foreground" />}
                     </div>
                     {value ? (
                         <div className="text-left min-w-0">
@@ -252,21 +237,14 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-2">
                     {value && (
-                        <span
-                            onClick={handleClear}
-                            className="text-[10px] text-muted-foreground hover:text-destructive underline underline-offset-2 cursor-pointer transition-colors"
-                        >
+                        <span onClick={handleClear} className="text-[10px] text-muted-foreground hover:text-destructive underline underline-offset-2 cursor-pointer transition-colors">
                             Clear
                         </span>
                     )}
-                    {isOpen
-                        ? <ChevronDown className="w-4 h-4 text-primary" />
-                        : <ChevronUp className="w-4 h-4 text-primary/60" />
-                    }
+                    {isOpen ? <ChevronDown className="w-4 h-4 text-primary" /> : <ChevronUp className="w-4 h-4 text-primary/60" />}
                 </div>
             </button>
 
-            {/* ── Picker panel — opens UPWARD, fully responsive ── */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -276,101 +254,54 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
                         transition={{ duration: 0.18, ease: "easeOut" }}
                         className="absolute left-0 right-0 bottom-[calc(100%+6px)] z-50 rounded-xl border border-primary/25 bg-background backdrop-blur-md shadow-2xl overflow-hidden w-full"
                     >
-                        {/* ── Column headers ── */}
                         <div className="grid grid-cols-3 border-b border-primary/10 bg-primary/5">
                             {["Hour", "Minute", "AM / PM"].map((h) => (
-                                <p key={h} className="text-[9px] font-bold uppercase tracking-wider text-primary/70 text-center py-2">
-                                    {h}
-                                </p>
+                                <p key={h} className="text-[9px] font-bold uppercase tracking-wider text-primary/70 text-center py-2">{h}</p>
                             ))}
                         </div>
-
-                        {/* ── Three scrollable columns ── */}
                         <div className="grid grid-cols-3 divide-x divide-primary/10" style={{ height: "160px" }}>
-
-                            {/* Hour — 01 to 12 in a 3-col grid */}
                             <div className="overflow-y-auto custom-scrollbar p-1.5">
                                 <div className="grid grid-cols-3 gap-1">
                                     {hours.map((h) => (
-                                        <button
-                                            key={h}
-                                            type="button"
-                                            onClick={() => setSelectedHour(h)}
+                                        <button key={h} type="button" onClick={() => setSelectedHour(h)}
                                             className={`text-xs py-1.5 rounded-lg font-semibold transition-all text-center w-full ${
-                                                selectedHour === h
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                                selectedHour === h ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                             }`}
-                                        >
-                                            {h}
-                                        </button>
+                                        >{h}</button>
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Minute — 00 to 59 scrollable */}
                             <div ref={minuteScrollRef} className="overflow-y-auto custom-scrollbar p-1.5">
                                 <div className="flex flex-col gap-0.5">
                                     {allMinutes.map((m) => (
-                                        <button
-                                            key={m}
-                                            type="button"
-                                            data-selected={selectedMinute === m ? "true" : "false"}
-                                            onClick={() => setSelectedMinute(m)}
+                                        <button key={m} type="button" data-selected={selectedMinute === m ? "true" : "false"} onClick={() => setSelectedMinute(m)}
                                             className={`text-xs py-1.5 rounded-lg font-semibold transition-all text-center w-full ${
-                                                selectedMinute === m
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                                selectedMinute === m ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                             }`}
-                                        >
-                                            {m}
-                                        </button>
+                                        >{m}</button>
                                     ))}
                                 </div>
                             </div>
-
-                            {/* AM / PM + OK button stacked below */}
                             <div className="flex flex-col p-1.5 gap-1.5">
-                                {/* AM / PM buttons */}
                                 <div className="flex flex-col gap-1 flex-1">
                                     {periods.map((p) => (
-                                        <button
-                                            key={p}
-                                            type="button"
-                                            onClick={() => setSelectedPeriod(p)}
+                                        <button key={p} type="button" onClick={() => setSelectedPeriod(p)}
                                             className={`text-xs py-2.5 rounded-lg font-bold transition-all text-center w-full ${
-                                                selectedPeriod === p
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                                selectedPeriod === p ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                             }`}
-                                        >
-                                            {p}
-                                        </button>
+                                        >{p}</button>
                                     ))}
                                 </div>
-
-                                {/* OK button — sits below AM/PM in the same column */}
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    className="w-full h-8 text-xs font-bold glow-gold mt-auto"
-                                    disabled={!selectedHour}
-                                    onClick={handleConfirm}
-                                >
-                                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                                    OK
+                                <Button type="button" size="sm" className="w-full h-8 text-xs font-bold glow-gold mt-auto" disabled={!selectedHour} onClick={handleConfirm}>
+                                    <CheckCircle2 className="w-3 h-3 mr-1" /> OK
                                 </Button>
                             </div>
                         </div>
-
-                        {/* ── Preview bar at bottom ── */}
                         <div className="flex items-center justify-between px-3 py-2 border-t border-primary/10 bg-primary/5">
                             <div className="flex items-center gap-2">
                                 <Clock className="w-3 h-3 text-primary/60 shrink-0" />
                                 {selectedHour ? (
-                                    <span className="text-xs font-bold text-primary">
-                                        {selectedHour} : {selectedMinute} &nbsp; {selectedPeriod}
-                                    </span>
+                                    <span className="text-xs font-bold text-primary">{selectedHour} : {selectedMinute} &nbsp; {selectedPeriod}</span>
                                 ) : (
                                     <span className="text-[10px] text-muted-foreground italic">Select hour to confirm</span>
                                 )}
@@ -380,13 +311,12 @@ const TimeOfBirthPicker = ({ value, onChange, error }: TimeOfBirthPickerProps) =
                     </motion.div>
                 )}
             </AnimatePresence>
-
             {error && <p className="text-red-500 text-[10px] mt-1">{error}</p>}
         </div>
     );
 };
 
-// ── Main BookingSlotStep ─────────────────────────────────────────
+// ── Main BookingSlotStep ──────────────────────────────────────────
 interface BookingSlotStepProps {
     bookingData: any;
     updateBookingData: (updates: any) => void;
@@ -399,31 +329,19 @@ interface BookingSlotStepProps {
 }
 
 export const BookingSlotStep = ({
-    bookingData,
-    updateBookingData,
-    errors,
-    durations,
-    selectedService,
-    isProcessingPayment,
-    onBack,
-    onPay
+    bookingData, updateBookingData, errors, durations,
+    selectedService, isProcessingPayment, onBack, onPay,
 }: BookingSlotStepProps) => {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6 md:space-y-8"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 md:space-y-8">
             <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_0.7fr] gap-4 lg:gap-5 max-w-full xl:max-w-5xl">
 
-                {/* ── LEFT: Calendar + Pricing toggle ── */}
+                {/* LEFT: Calendar + Pricing toggle */}
                 <div className="space-y-3 max-w-full lg:max-w-xl">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-1">
                         <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-primary" />
-                            <h3 className="font-bold text-base sm:text-lg uppercase tracking-wider">
-                                Select Date & Time
-                            </h3>
+                            <h3 className="font-bold text-base sm:text-lg uppercase tracking-wider">Select Date & Time</h3>
                         </div>
 
                         {bookingData.duration && selectedService && "duration" in selectedService && selectedService.duration && (
@@ -442,29 +360,19 @@ export const BookingSlotStep = ({
                                 <span className="text-xs font-medium text-primary/80">Duration:</span>
                                 <div className="flex gap-1.5">
                                     {durations.map((d) => (
-                                        <button
-                                            key={d.value}
-                                            onClick={() => updateBookingData({ duration: d.value })}
+                                        <button key={d.value} onClick={() => updateBookingData({ duration: d.value })}
                                             className={`text-[10px] px-2 py-0.5 rounded-md transition-all ${
-                                                bookingData.duration === d.value
-                                                    ? "bg-primary text-primary-foreground font-bold"
-                                                    : "bg-background/50 text-muted-foreground hover:text-primary"
+                                                bookingData.duration === d.value ? "bg-primary text-primary-foreground font-bold" : "bg-background/50 text-muted-foreground hover:text-primary"
                                             }`}
-                                        >
-                                            {d.label}
-                                        </button>
+                                        >{d.label}</button>
                                     ))}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {errors.duration && (
-                        <p className="text-red-500 text-sm font-semibold mb-2">{errors.duration}</p>
-                    )}
-                    {errors.slot && (
-                        <p className="text-red-500 text-sm font-semibold mb-2">{errors.slot}</p>
-                    )}
+                    {errors.duration && <p className="text-red-500 text-sm font-semibold mb-2">{errors.duration}</p>}
+                    {errors.slot     && <p className="text-red-500 text-sm font-semibold mb-2">{errors.slot}</p>}
 
                     {bookingData.duration ? (
                         <div className="w-full">
@@ -472,9 +380,7 @@ export const BookingSlotStep = ({
                                 selectedDate={bookingData.selectedDate}
                                 selectedTime={bookingData.selectedTime}
                                 duration={bookingData.duration}
-                                onSelect={(date, time) =>
-                                    updateBookingData({ selectedDate: date, selectedTime: time })
-                                }
+                                onSelect={(date, time) => updateBookingData({ selectedDate: date, selectedTime: time })}
                             />
                         </div>
                     ) : selectedService && !("duration" in selectedService && selectedService.duration) ? (
@@ -484,23 +390,14 @@ export const BookingSlotStep = ({
                             </div>
                             <div className="space-y-1">
                                 <h4 className="text-xl font-bold text-primary font-serif">Select Session Duration</h4>
-                                <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                                    Please choose your preferred consultation time below.
-                                </p>
+                                <p className="text-xs text-muted-foreground max-w-xs mx-auto">Please choose your preferred consultation time below.</p>
                             </div>
                             <div className="flex flex-wrap justify-center gap-3 mt-2">
                                 {durations.map((d) => (
-                                    <Button
-                                        key={d.value}
-                                        variant="outline"
-                                        size="sm"
-                                        className={`min-w-[110px] h-10 text-xs font-bold border-primary/20 hover:border-primary hover:bg-primary/5 transition-all rounded-xl ${
-                                            errors.duration ? "border-red-500" : ""
-                                        }`}
+                                    <Button key={d.value} variant="outline" size="sm"
+                                        className={`min-w-[110px] h-10 text-xs font-bold border-primary/20 hover:border-primary hover:bg-primary/5 transition-all rounded-xl ${errors.duration ? "border-red-500" : ""}`}
                                         onClick={() => updateBookingData({ duration: d.value })}
-                                    >
-                                        {d.label}
-                                    </Button>
+                                    >{d.label}</Button>
                                 ))}
                             </div>
                         </div>
@@ -509,15 +406,13 @@ export const BookingSlotStep = ({
                     <CollapsiblePricingChart />
                 </div>
 
-                {/* ── RIGHT: Form fields + Pay ── */}
+                {/* RIGHT: Form fields + Pay */}
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
+                        {/* ── Gender ── */}
                         <div className="space-y-1.5">
-                            <Label className="text-primary font-medium text-xs">Gender</Label>
-                            <Select
-                                value={bookingData.gender}
-                                onValueChange={(val) => updateBookingData({ gender: val })}
-                            >
+                            <Label className={labelCls}>Gender</Label>
+                            <Select value={bookingData.gender} onValueChange={(val) => updateBookingData({ gender: val })}>
                                 <SelectTrigger className={`bg-background border-primary/20 h-10 text-sm ${errors.gender ? "border-red-500" : ""}`}>
                                     <SelectValue placeholder="Gender" />
                                 </SelectTrigger>
@@ -529,10 +424,12 @@ export const BookingSlotStep = ({
                             </Select>
                             {errors.gender && <p className="text-red-500 text-[10px] mt-1">{errors.gender}</p>}
                         </div>
+
+                        {/* ── Place of Birth ── */}
                         <div className="space-y-1.5">
-                            <Label className="text-primary font-medium text-xs">Place of Birth</Label>
+                            <Label className={labelCls}>Place of Birth</Label>
                             <Input
-                                placeholder="City"
+                                placeholder="Place of Birth"
                                 className={`bg-background border-primary/20 h-10 text-sm ${errors.place ? "border-red-500" : ""}`}
                                 value={bookingData.place}
                                 onChange={(e) => updateBookingData({ place: e.target.value })}
@@ -541,12 +438,11 @@ export const BookingSlotStep = ({
                         </div>
                     </div>
 
-                    {/* ── Time of Birth picker ── */}
-                    {(["astrology-exact-birth-time", "astrology-no-exact-birth-time", "astrology-in-person"].includes(bookingData.serviceId) ||
-                        bookingData.serviceId === "numerology" ||
-                        bookingData.serviceId === "premium-kundli") && (
+                    {/* ── Time of Birth ── */}
+                    {["astrology-exact-birth-time", "astrology-no-exact-birth-time", "astrology-in-person",
+                      "numerology", "premium-kundli"].includes(bookingData.serviceId) && (
                         <div className="space-y-1.5">
-                            <Label className="text-primary font-medium text-xs">Time of Birth</Label>
+                            <Label className={labelCls}>Time of Birth</Label>
                             <TimeOfBirthPicker
                                 value={bookingData.timeOfBirth || ""}
                                 onChange={(val) => updateBookingData({ timeOfBirth: val })}
@@ -555,70 +451,55 @@ export const BookingSlotStep = ({
                         </div>
                     )}
 
+                    {/* ── Vastu fields ── */}
                     {bookingData.serviceId === "vastu" && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            className="space-y-4"
-                        >
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="space-y-4">
                             <div className="space-y-1.5">
-                                <Label className="text-primary font-medium text-xs">Area Dimension</Label>
-                                <Input
-                                    placeholder="e.g. 20x40 ft"
+                                <Label className={labelCls}>Area Dimension</Label>
+                                <Input placeholder="e.g. 20x40 ft"
                                     className={`bg-background border-primary/20 h-10 text-sm ${errors.areaDimension ? "border-red-500" : ""}`}
                                     value={bookingData.areaDimension}
-                                    onChange={(e) => updateBookingData({ areaDimension: e.target.value })}
-                                />
+                                    onChange={(e) => updateBookingData({ areaDimension: e.target.value })} />
                                 {errors.areaDimension && <p className="text-red-500 text-[10px] mt-1">{errors.areaDimension}</p>}
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-primary font-medium text-xs">Property Location</Label>
-                                <Input
-                                    placeholder="Nearest City / Area"
+                                <Label className={labelCls}>Property Location</Label>
+                                <Input placeholder="Nearest City / Area"
                                     className={`bg-background border-primary/20 h-10 text-sm ${errors.propertyLocation ? "border-red-500" : ""}`}
                                     value={bookingData.propertyLocation}
-                                    onChange={(e) => updateBookingData({ propertyLocation: e.target.value })}
-                                />
+                                    onChange={(e) => updateBookingData({ propertyLocation: e.target.value })} />
                                 {errors.propertyLocation && <p className="text-red-500 text-[10px] mt-1">{errors.propertyLocation}</p>}
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-primary font-medium text-xs">Upload Floor Plan</Label>
-                                <Input
-                                    type="file"
-                                    className="bg-background border-primary/20 h-10 py-1 text-xs"
-                                    onChange={(e) => updateBookingData({ floorPlan: e.target.files?.[0] })}
-                                />
+                                <Label className={labelCls}>Upload Floor Plan</Label>
+                                <Input type="file" className="bg-background border-primary/20 h-10 py-1 text-xs"
+                                    onChange={(e) => updateBookingData({ floorPlan: e.target.files?.[0] })} />
                             </div>
                         </motion.div>
                     )}
 
+                    {/* ── Detailed Concern ── */}
                     <div className="space-y-1.5">
-                        <Label className="text-primary font-medium text-xs">Detailed Concern</Label>
-                        <Textarea
-                            placeholder="Your questions or details..."
-                            rows={3}
+                        <Label className={labelCls}>Detailed Concern</Label>
+                        <Textarea placeholder="Your questions or details..." rows={3}
                             className="bg-background border-primary/20 resize-none py-2 text-sm"
                             value={bookingData.concern}
-                            onChange={(e) => updateBookingData({ concern: e.target.value })}
-                        />
+                            onChange={(e) => updateBookingData({ concern: e.target.value })} />
                     </div>
 
-                    {/* ── Booking amount + Pay ── */}
+                    {/* ── Amount + Pay ── */}
                     <div className="pt-4 space-y-4 border-t border-primary/20">
                         <div className="flex items-center justify-between p-3.5 bg-primary/10 rounded-2xl border border-primary/20 shadow-inner">
                             <div className="flex flex-col gap-1">
-                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-tight">
-                                    Booking Amount
-                                </p>
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-tight">Booking Amount</p>
                                 <span className="text-[9px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full font-bold uppercase w-fit">
                                     {bookingData.duration} Mins
                                 </span>
                             </div>
                             <div className="text-xl font-bold text-primary drop-shadow-sm font-serif">
-                                ₹{selectedService?.price}
+                                ₹{selectedService?.price?.toLocaleString("en-IN")}
                             </div>
                         </div>
-
                         <div className="text-center space-y-3">
                             <Button
                                 className="w-full h-12 text-base bg-primary hover:bg-primary/90 glow-gold font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
@@ -631,7 +512,7 @@ export const BookingSlotStep = ({
                                         Processing...
                                     </div>
                                 ) : (
-                                    `Confirm Booking & Pay ₹${selectedService?.price}`
+                                    `Confirm Booking & Pay ₹${selectedService?.price?.toLocaleString("en-IN")}`
                                 )}
                             </Button>
                             <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground">
